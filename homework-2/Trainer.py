@@ -3,10 +3,11 @@ from torch.utils.data import DataLoader
 
 
 class Trainer:
-    def __init__(self, net, loss, optimizer):
+    def __init__(self, net, loss, optimizer, writer):
         self.__net = net
         self.__loss = loss
         self.__optimizer = optimizer
+        self.__writer = writer
 
     def train(self, dataset, batch_size, epochs_num):
         data_loader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
@@ -23,7 +24,9 @@ class Trainer:
                 self.__optimizer.step()
 
             training_loss_after_epoch = self.__average_loss(data_loader)
-            print('Training loss after epoch #{} = {:.3f}'.format(epoch + 1, training_loss_after_epoch))
+
+            if self.__writer is not None:
+                self.__writer.add_scalar('Training loss', training_loss_after_epoch, epoch + 1)
 
         self.__net.train(False)
 
