@@ -1,10 +1,9 @@
 import torch
-from tensorboardX import SummaryWriter
 from torch import nn
 from torch.utils.data import TensorDataset
 
-from Trainer import Trainer
-from ResNeXt import ResNeXt
+from homework2.Trainer import Trainer
+from homework2.ResNeXt import ResNeXt
 
 
 def test_answer():
