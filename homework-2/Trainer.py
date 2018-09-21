@@ -1,8 +1,5 @@
 import torch
-from torch import nn
-from torch.utils.data import DataLoader, TensorDataset
-
-from network import SimpleCNN
+from torch.utils.data import DataLoader
 
 
 class Trainer:
@@ -34,12 +31,3 @@ class Trainer:
         with torch.no_grad():
             loss_values = [self.__loss(self.__net(inputs), labels).unsqueeze(0) for inputs, labels in data]
             return torch.cat(loss_values).mean().item()
-
-
-if __name__ == '__main__':
-    net = SimpleCNN()
-    trainer = Trainer(net, nn.CrossEntropyLoss(), torch.optim.Adam(net.parameters(), lr=0.001))
-
-    dataset = TensorDataset(torch.rand(1, 1, 28, 28), torch.tensor([1]))
-
-    trainer.train(dataset, batch_size=100, epochs_num=50)
