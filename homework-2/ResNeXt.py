@@ -96,6 +96,7 @@ class ResNeXt(torch.nn.Module):
         self.__convolution = nn.Sequential(*modules)
 
         self.__linear = nn.Linear(channels, self.classes_num)
+        self.__softmax = nn.Softmax(dim=1)
 
     def forward(self, x):
         out = self.__convolution(x)
@@ -105,7 +106,7 @@ class ResNeXt(torch.nn.Module):
         if self.training:
             return out
 
-        return self.softmax(out)
+        return self.__softmax(out)
 
     def __make_block(self, in_channels, out_channels, num_of_blocks, downsampling_stride):
         return [Bottleneck(in_channels, out_channels, self.__cardinality, downsampling_stride)] + \
