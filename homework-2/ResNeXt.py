@@ -2,7 +2,6 @@ import torch
 from torch import nn
 
 
-# todo: add batch_normalization
 class Bottleneck(nn.Module):
     def __init__(self, in_channels, out_channels, cardinality, downsampling_stride):
         super(Bottleneck, self).__init__()
@@ -42,10 +41,13 @@ class Bottleneck(nn.Module):
         self.__relu = nn.ReLU()
         self.__residual_mapping = nn.Sequential(
             nn.Conv2d(in_channels, out_channels_halved, kernel_size=1, bias=False),
+            nn.BatchNorm2d(out_channels_halved),
             self.__relu,
             middle_convolution,
+            nn.BatchNorm2d(out_channels_halved),
             self.__relu,
-            nn.Conv2d(out_channels_halved, out_channels, kernel_size=1, bias=False)
+            nn.Conv2d(out_channels_halved, out_channels, kernel_size=1, bias=False),
+            nn.BatchNorm2d(out_channels)
         )
 
     def forward(self, x):
@@ -59,7 +61,6 @@ class Bottleneck(nn.Module):
         return out
 
 
-# todo: add batch_normalization
 class ResNeXt(torch.nn.Module):
     in_channels = 3
     in_map_size = 224
@@ -77,6 +78,7 @@ class ResNeXt(torch.nn.Module):
         self.__relu = nn.ReLU()
         modules = [
             nn.Conv2d(self.in_channels, channels, kernel_size=7, padding=3, stride=2, bias=False),
+            nn.BatchNorm2d(channels),
             self.__relu,
             nn.MaxPool2d(kernel_size=3, padding=1, stride=2)
         ]
